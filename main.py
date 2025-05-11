@@ -41,10 +41,10 @@ class BTreeNode:
         node = cls(block_id=block_id)
         node.parent_id = struct.unpack('>Q', data[8:16])[0]
         node.key_count = struct.unpack('>Q', data[16:24])[0]
-        for i in range(cls.MAX_KEYS):
+        for i in range(MAX_KEYS):
             node.keys[i] = struct.unpack('>Q', data[24 + i * 8:32 + i * 8])[0]
             node.values[i] = struct.unpack('>Q', data[176 + i * 8:184 + i * 8])[0]
-        for i in range(cls.MAX_CHILDREN):
+        for i in range(MAX_CHILDREN):
             node.children[i] = struct.unpack('>Q', data[328 + i * 8:336 + i * 8])[0]
         return node
 
@@ -84,8 +84,8 @@ class BTree:
                 self._insert_non_full(root, key, value)
                 write_node(self.filename, root)
 
+    #splits a full child node
     def _split_child(self, parent, child_index):
-        """Split a full child node."""
         child = read_node(self.filename, parent.children[child_index])
         new_node = BTreeNode(block_id=self.next_id, parent_id=parent.block_id)
         self.next_id += 1
@@ -96,7 +96,7 @@ class BTree:
         parent.values[parent.key_count] = child.values[middle_index]
         parent.key_count += 1
 
-        # Move second half to new node
+        # seocnd half
         new_node.key_count = BTreeNode.MIN_DEGREE - 1
         for i in range(new_node.key_count):
             new_node.keys[i] = child.keys[middle_index + 1 + i]
@@ -104,7 +104,7 @@ class BTree:
             new_node.children[i] = child.children[middle_index + 1 + i]
         new_node.children[new_node.key_count] = child.children[middle_index + 1 + new_node.key_count]
 
-        # Update child pointers
+        # child pointers
         parent.children[child_index + 1] = new_node.block_id
         for i in range(parent.key_count):
             if parent.children[i] != 0:
@@ -112,7 +112,7 @@ class BTree:
                 child_node.parent_id = parent.block_id
                 write_node(self.filename, child_node)
 
-        # Truncate original child
+        # truncate the child
         child.key_count = BTreeNode.MIN_DEGREE - 1
         for i in range(child.key_count, BTreeNode.MAX_KEYS):
             child.keys[i] = 0
@@ -123,8 +123,8 @@ class BTree:
         write_node(self.filename, child)
         write_node(self.filename, new_node)
 
+    #insert into a non full node (doesn't need to be split or anything)
     def _insert_non_full(self, node, key, value):
-        """Insert into a non-full node."""
         i = node.key_count - 1
         if node.children[0] == 0:  # Leaf node
             while i >= 0 and key < node.keys[i]:
@@ -147,7 +147,24 @@ class BTree:
                 child = read_node(self.filename, node.children[i])
             self._insert_non_full(child, key, value)
             write_node(self.filename, child)
-            
+
+#searches for a key
+    def search(self, key):
+        if self.root_id == 0:
+            return None
+        return self._search_node(self.root_id, key)
+
+#goes through and tries to search the node for a key recursively
+    def _search_node(self, block_id, key):
+        node = read_node(self.filename, block_id)
+        i = 0
+        while i < node.key_count and key > node.keys[i]:
+            i += 1
+        if i < node.key_count and key == node.keys[i]:
+            return node.values[i]
+        if node.children[0] == 0:  # Leaf node
+            return None
+        return self._search_node(node.children[i], key)
 
 
 #create the index file
@@ -237,6 +254,26 @@ def insert_command(filename, key, value):
         print(f"Error accessing file '{filename}': {e}")
         sys.exit(1)
 
+#searches through the b-tree to find the key basically
+def search_command(filename, key):
+    if not is_valid_index_file(filename):
+        sys.exit(1)
+    try:
+        key = int(key)
+        if key < 0:
+            raise ValueError("Key must be non-negative")
+        tree = BTree(filename)
+        value = tree.search(key)
+        if value is not None:
+            print(f"Found: key {key}, value {value}")
+        else:
+            print(f"Key {key} not found in '{filename}'.")
+    except ValueError as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+    except IOError as e:
+        print(f"Error accessing file '{filename}': {e}")
+        sys.exit(1)
 
 def main():
     if len(sys.argv) < 3:
@@ -253,6 +290,11 @@ def main():
             print("Usage: python project3.py insert <index_file> <key> <value>")
             sys.exit(1)
         insert_command(index_file, sys.argv[3], sys.argv[4])
+    elif command == 'search':
+        if len(sys.argv) != 4:
+            print("Usage: python project3.py search <index_file> <key>")
+            sys.exit(1)
+        search_command(index_file, sys.argv[3])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

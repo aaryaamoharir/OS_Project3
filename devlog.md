@@ -47,4 +47,14 @@ up watching a video and realized struct.unpack could be helpful.
 
 Now I plan to work on the b-tree insert method. 
 
+## **05-11-2025 5:20PM Session**
+It seems like the insert method is working. I had to go back and relearn some file commands such as fseek to move 
+the pointer of where the file was writing. 
 
+
+## **05-11-2025 5:39PM Session**
+
+The search was fairly straight forward so it seems like that's working now. I tried checking how it's 
+reading the information into the test files that I created but it seems like something is off. I'm not entirely 
+sure so I'll come back to that towards the end just to ensure that I have enough time to work on the rest of the 
+project.
