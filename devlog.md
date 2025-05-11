@@ -37,3 +37,5 @@ Currently I'm working on creating a basic implementation of the program. I reali
 the issue from the morning was because I wasn't using the last line (name == main) and 
 therefore, it was never going to the main function 
 
+I was having some issues with creating the file because I forgot to consider if the file already 
+exists but that was a quick fix. 
