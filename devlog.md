@@ -58,3 +58,14 @@ The search was fairly straight forward so it seems like that's working now. I tr
 reading the information into the test files that I created but it seems like something is off. I'm not entirely 
 sure so I'll come back to that towards the end just to ensure that I have enough time to work on the rest of the 
 project.
+
+Now I'll work on the load functinality. Honestly it should be pretty simple -> just extract information from the 
+csv, make sure that the key and value pairs are non-negative, and load all of those key/value pairs by using 
+the insert command that we've already created. 
+
+## **05-11-2025 6:17PM Session**
+Finished the load method I think. I'm not sure if when it loads, it needs to load it into a seperate index file 
+but from the instructions it would make more sense to just store all of them in one. Additionally, I realized that I'm 
+not storing any in memory right now so after I've worked on most of the commands I'll implement a mechanism 
+that stores 3 things in cache and checks the cache first before extracting from the file directory 
+

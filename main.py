@@ -68,7 +68,7 @@ class BTree:
         else:
             # Load root node
             root = read_node(self.filename, self.root_id)
-            if root.key_count == BTreeNode.MAX_KEYS:
+            if root.key_count == MAX_KEYS:
                 # Split root
                 new_root = BTreeNode(block_id=self.next_id)
                 self.next_id += 1
@@ -91,13 +91,13 @@ class BTree:
         self.next_id += 1
 
         # Move middle key/value to parent
-        middle_index = BTreeNode.MIN_DEGREE - 1
+        middle_index = MINIMAL_DEGREE - 1
         parent.keys[parent.key_count] = child.keys[middle_index]
         parent.values[parent.key_count] = child.values[middle_index]
         parent.key_count += 1
 
         # seocnd half
-        new_node.key_count = BTreeNode.MIN_DEGREE - 1
+        new_node.key_count = MINIMAL_DEGREE - 1
         for i in range(new_node.key_count):
             new_node.keys[i] = child.keys[middle_index + 1 + i]
             new_node.values[i] = child.values[middle_index + 1 + i]
@@ -113,11 +113,11 @@ class BTree:
                 write_node(self.filename, child_node)
 
         # truncate the child
-        child.key_count = BTreeNode.MIN_DEGREE - 1
-        for i in range(child.key_count, BTreeNode.MAX_KEYS):
+        child.key_count = MINIMAL_DEGREE - 1
+        for i in range(child.key_count, MAX_KEYS):
             child.keys[i] = 0
             child.values[i] = 0
-        for i in range(child.key_count + 1, BTreeNode.MAX_CHILDREN):
+        for i in range(child.key_count + 1, MAX_CHILDREN):
             child.children[i] = 0
 
         write_node(self.filename, child)
@@ -139,7 +139,7 @@ class BTree:
                 i -= 1
             i += 1
             child = read_node(self.filename, node.children[i])
-            if child.key_count == BTreeNode.MAX_KEYS:
+            if child.key_count == MAX_KEYS:
                 self._split_child(node, i)
                 write_node(self.filename, node)
                 if key > node.keys[i]:
@@ -275,6 +275,29 @@ def search_command(filename, key):
         print(f"Error accessing file '{filename}': {e}")
         sys.exit(1)
 
+#handles the load file
+def load_command(index_file, csv_file):
+    if not is_valid_index_file(index_file):
+        sys.exit(1)
+    if not os.path.exists(csv_file):
+        print(f"Error: CSV file '{csv_file}' does not exist.")
+        sys.exit(1)
+    try:
+        tree = BTree(index_file)
+        with open(csv_file, 'r') as f:
+            for line in f:
+                key, value = map(int, line.strip().split(','))
+                if key < 0 or value < 0:
+                    raise ValueError("Keys and values must be non-negative")
+                tree.insert(key, value)
+        print(f"Loaded key/value pairs from '{csv_file}' into '{index_file}'.")
+    except ValueError as e:
+        print(f"Error in CSV file: {e}")
+        sys.exit(1)
+    except IOError as e:
+        print(f"Error accessing files: {e}")
+        sys.exit(1)
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: python project3.py <command> <index_file> [args...]")
@@ -295,6 +318,11 @@ def main():
             print("Usage: python project3.py search <index_file> <key>")
             sys.exit(1)
         search_command(index_file, sys.argv[3])
+    elif command == 'load':
+        if len(sys.argv) != 4:
+            print("Usage: python project3.py insert <index_file> <csv_file>")
+            sys.exit(1)
+        load_command(index_file, sys.argv[3])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)
