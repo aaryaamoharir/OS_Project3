@@ -39,3 +39,10 @@ therefore, it was never going to the main function
 
 I was having some issues with creating the file because I forgot to consider if the file already 
 exists but that was a quick fix. 
+
+## **05-11-2025 4:55PM Session**
+Working on implementing a b-tree with a 512 block so I watched a quick youtube video 
+to better understand what it was asking. I didn't really understand how to serialize the block so I ended 
+up watching a video and realized struct.unpack could be helpful. 
+
+
