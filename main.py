@@ -166,6 +166,23 @@ class BTree:
             return None
         return self._search_node(node.children[i], key)
 
+    #this will print all the key value in order (using recursion since it's been a minute since I've used it so I wanted to try it)
+    def print_all(self):
+        if self.root_id == 0:
+            print("Index is empty.")
+            return
+        self._print_node(self.root_id)
+
+    #recursively prints out all the pairs in key value format
+    def _print_node(self, block_id):
+        node = read_node(self.filename, block_id)
+        for i in range(node.key_count):
+            if node.children[i] != 0:
+                self._print_node(node.children[i])
+            print(f"key {node.keys[i]}, value {node.values[i]}")
+        if node.children[node.key_count] != 0:
+            self._print_node(node.children[node.key_count])
+
 
 #create the index file
 def create_index_file(filename):
@@ -298,6 +315,17 @@ def load_command(index_file, csv_file):
         print(f"Error accessing files: {e}")
         sys.exit(1)
 
+#handles the print_command
+def print_command(filename):
+    if not is_valid_index_file(filename):
+        sys.exit(1)
+    try:
+        tree = BTree(filename)
+        tree.print_all()
+    except IOError as e:
+        print(f"Error accessing file '{filename}': {e}")
+        sys.exit(1)
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: python project3.py <command> <index_file> [args...]")
@@ -323,6 +351,11 @@ def main():
             print("Usage: python project3.py insert <index_file> <csv_file>")
             sys.exit(1)
         load_command(index_file, sys.argv[3])
+    elif command == 'print':
+        if len(sys.argv) != 3:
+            print("Usage: python project3.py print <index_file>")
+            sys.exit(1)
+        print_command(index_file)
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

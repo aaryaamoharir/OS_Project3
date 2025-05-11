@@ -69,3 +69,5 @@ but from the instructions it would make more sense to just store all of them in 
 not storing any in memory right now so after I've worked on most of the commands I'll implement a mechanism 
 that stores 3 things in cache and checks the cache first before extracting from the file directory 
 
+I'll start working on the print command. It should be pretty straight forward, essentially recursively 
+going through all the key value pairs in an index file while node count isn't 0. 
