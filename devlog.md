@@ -19,3 +19,17 @@ to understand what I'm supposed to do.
 I did some more research and have a strong outline of how I'll be implementing this. I'll get started on 
 actually implementing it tomorrow and should hopefully be ready to submit by tomorrow night.
 
+## **05-11-2025 9:38AM Session**
+Today I'll be implementing all aspects of the project. I think I'll start with creating the b-tree structure. 
+It makes more sense to have multiple classes so I'll create BTreeNode class for the actual 
+BTree structure and a BTree class to manage all the operations. Lastly, since the file operations 
+are a little different I'll create a seperate class to handle file operations as well. 
+
+Additionally, in my previous projects my code has been incredibly messy to read so I'm going to try to make it 
+more modular using multiple methods, classes, and variables for constants instead of 
+just putting in the variable values. 
+
+I'm currently having trouble with it reading in the number of arguments for some reason so I'm ending this session and will come
+back in a while to continue working on the project 
+
+
