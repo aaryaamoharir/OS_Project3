@@ -3,8 +3,50 @@ import sys
 import struct
 import csv
 
+BLOCK_SIZE = 512
+MAGIC_NUMBER = b"4348PRJ3"
+MINIMAL_DEGREE = 10  # t value in B-tree terminology
+MAX_KEYS = 19
+MAX_CHILDREN = 20
 
+#initialze the b-tree
+class BTreeNode:
+    def __init__(self, block_id, parent_id=0, is_leaf=True):
+        self.block_id = block_id
+        self.parent_id = parent_id
+        self.is_leaf = is_leaf
+        self.num_keys = 0
+        self.keys = [0] * MAX_KEYS  # 19 keys
+        self.values = [0] * MAX_KEYS  # 19 values
+        self.children = [0] * MAX_CHILDREN  # 20 children, 0 indicates no child
 
+    #check if it's full
+    def is_full(self):
+        return self.num_keys == MAX_KEYS
+
+#manage the operations on the index file
+class IndexFile:
+    def __init__(self, filename):
+        self.filename = filename
+        self.root_block_id = 0
+        self.next_block_id = 1
+        self.nodes_in_memory = {} #this is a cache for nodes and it has a limit of 3
+
+    #create an index file
+    def create(self):
+        if os.path.exists(self.filename):
+            raise FileExistsError(f"File {self.filename} already exists")
+
+        with open(self.filename, 'wb') as f:
+            # writes the header according to instructions
+            header = struct.pack('>8sQQ', MAGIC_NUMBER, self.root_block_id, self.next_block_id)
+            header += b'\0' * (BLOCK_SIZE - len(header))
+            f.write(header)
+#manages the b-tree operations
+class BTree:
+
+    def __init__(self, index_file):
+        self.index_file = index_file
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
