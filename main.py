@@ -3,16 +3,12 @@ import sys
 import struct
 import csv
 
-# these are the constants
-BLOCK_SIZE = 512
-MAGIC_NUMBER = b"4348PRJ3"
-MINIMAL_DEGREE = 10  # t-value basically
-MAX_KEYS = 19
-MAX_CHILDREN = 20
 
-#class BTreeNode:
-#class IndexFile:
-#class BTree:
+
+def print_hi(name):
+    # Use a breakpoint in the code line below to debug your script.
+    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+
 
 def main():
     print(len(sys.argv))
@@ -25,21 +21,28 @@ def main():
         print("  load <index_file> <csv_file>")
         print("  print <index_file>")
         print("  extract <index_file> <csv_file>")
+        sys.exit(1)
 
-    command = sys.argv[1].lower()  #turn it all lowercase for comparsion
+    command = sys.argv[1].lower()
 
     if command == "create" and len(sys.argv) == 3:
-        create_index_file(sys.argv[2])
+        #function to create index
     elif command == "insert" and len(sys.argv) == 5:
-        insert_key_value(sys.argv[2], sys.argv[3], sys.argv[4])
+        #function to insert index
     elif command == "search" and len(sys.argv) == 4:
-        search_key(sys.argv[2], sys.argv[3])
+        #functio nto searhc
     elif command == "load" and len(sys.argv) == 4:
-        load_from_csv(sys.argv[2], sys.argv[3])
+        #function to load
     elif command == "print" and len(sys.argv) == 3:
-        print_all(sys.argv[2])
+        #function to print
     elif command == "extract" and len(sys.argv) == 4:
-        extract_to_csv(sys.argv[2], sys.argv[3])
+        #function to extract
     else:
         print("Invalid command or wrong number of arguments")
         sys.exit(1)
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    main()
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/

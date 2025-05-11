@@ -32,4 +32,8 @@ just putting in the variable values.
 I'm currently having trouble with it reading in the number of arguments for some reason so I'm ending this session and will come
 back in a while to continue working on the project 
 
+## **05-11-2025 2:41PM Session**
+Currently I'm working on creating a basic implementation of the program. I realized 
+the issue from the morning was because I wasn't using the last line (name == main) and 
+therefore, it was never going to the main function 
 
