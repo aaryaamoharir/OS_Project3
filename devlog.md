@@ -45,4 +45,6 @@ Working on implementing a b-tree with a 512 block so I watched a quick youtube v
 to better understand what it was asking. I didn't really understand how to serialize the block so I ended 
 up watching a video and realized struct.unpack could be helpful. 
 
+Now I plan to work on the b-tree insert method. 
+
 
