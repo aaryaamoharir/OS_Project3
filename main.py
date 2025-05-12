@@ -183,6 +183,34 @@ class BTree:
         if node.children[node.key_count] != 0:
             self._print_node(node.children[node.key_count])
 
+    #extracts them all into the csv file as long as it doesn't already exist
+    def extract(self, csv_file):
+        if os.path.exists(csv_file):
+            print(f"Error: Output file '{csv_file}' already exists.")
+            return False
+        pairs = []
+        self._collect_pairs(self.root_id, pairs)
+        try:
+            with open(csv_file, 'w') as f:
+                for key, value in pairs:
+                    f.write(f"{key},{value}\n")
+            return True
+        except IOError as e:
+            print(f"Error writing to '{csv_file}': {e}")
+            return False
+
+    #collects the key value pairs in order
+    def _collect_pairs(self, block_id, pairs):
+        if block_id == 0:
+            return
+        node = read_node(self.filename, block_id)
+        for i in range(node.key_count):
+            if node.children[i] != 0:
+                self._collect_pairs(node.children[i], pairs)
+            pairs.append((node.keys[i], node.values[i]))
+        if node.children[node.key_count] != 0:
+            self._collect_pairs(node.children[node.key_count], pairs)
+
 
 #create the index file
 def create_index_file(filename):
@@ -326,6 +354,18 @@ def print_command(filename):
         print(f"Error accessing file '{filename}': {e}")
         sys.exit(1)
 
+#handles the extract command by sending it to the extract method
+def extract_command(index_file, csv_file):
+    if not is_valid_index_file(index_file):
+        sys.exit(1)
+    try:
+        tree = BTree(index_file)
+        if tree.extract(csv_file):
+            print(f"Extracted key/value pairs to '{csv_file}'.")
+    except IOError as e:
+        print(f"Error accessing files: {e}")
+        sys.exit(1)
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: python project3.py <command> <index_file> [args...]")
@@ -356,6 +396,11 @@ def main():
             print("Usage: python project3.py print <index_file>")
             sys.exit(1)
         print_command(index_file)
+    elif command == 'extract':
+        if len(sys.argv) != 4:
+            print("Usage: python project3.py extract <index_file> <csv_file>")
+            sys.exit(1)
+        extract_command(index_file, sys.argv[3])
     else:
         print(f"Unknown command: {command}")
         sys.exit(1)

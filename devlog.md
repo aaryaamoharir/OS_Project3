@@ -71,3 +71,12 @@ that stores 3 things in cache and checks the cache first before extracting from 
 
 I'll start working on the print command. It should be pretty straight forward, essentially recursively 
 going through all the key value pairs in an index file while node count isn't 0. 
+
+I'll start working on the extract method. Ideally, if I could use my print methods and instead print into the csv file that 
+would be great but I could also just reuse that code and instead write to a file. I could also just use 
+a for loop to iterate through all the pairs 
+
+## **05-11-2025 7:21PM Session**
+I think mostly everything works functionality wise. Initially I thought we needed a cache to store three in memory but 
+from his project overview video I think it's more for handling splitting the node. Overall it was a pretty interesting project 
+to work on and I learned a lot about b+ trees and implementing them. 
