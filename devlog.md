@@ -82,3 +82,6 @@ from his project overview video I think it's more for handling splitting the nod
 to work on and I learned a lot about b+ trees and implementing them. 
 
 
+## **05-11-2025 20:09PM Session**
+I realized there was an issue with me not handling duplicates in my code so I edited it to handle that in the inserts. Essentially, 
+it searches through the nodes and if it finds the node then it outputs an error. 
