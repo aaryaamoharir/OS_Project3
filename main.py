@@ -290,6 +290,11 @@ def insert_command(filename, key, value):
         if key < 0 or value < 0:
             raise ValueError("Key and value must be non-negative")
         tree = BTree(filename)
+        existing_value = tree.search(key)
+        if existing_value is not None:
+            print(f"Error: Key {key} already exists in '{filename}'.")
+            sys.exit(1)
+
         tree.insert(key, value)
         print(f"Inserted key {key} with value {value} into '{filename}'.")
     except ValueError as e:
@@ -334,6 +339,11 @@ def load_command(index_file, csv_file):
                 key, value = map(int, line.strip().split(','))
                 if key < 0 or value < 0:
                     raise ValueError("Keys and values must be non-negative")
+                    # Check for duplicate key
+                existing_value = tree.search(key)
+                if existing_value is not None:
+                    print(f"Error: Key {key} already exists in '{index_file}'.")
+                    sys.exit(1)
                 tree.insert(key, value)
         print(f"Loaded key/value pairs from '{csv_file}' into '{index_file}'.")
     except ValueError as e:

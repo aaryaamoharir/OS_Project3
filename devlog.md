@@ -80,3 +80,5 @@ a for loop to iterate through all the pairs
 I think mostly everything works functionality wise. Initially I thought we needed a cache to store three in memory but 
 from his project overview video I think it's more for handling splitting the node. Overall it was a pretty interesting project 
 to work on and I learned a lot about b+ trees and implementing them. 
+
+
