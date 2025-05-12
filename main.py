@@ -222,8 +222,8 @@ def create_index_file(filename):
         with open(filename, 'wb') as f:
             # magics number, then root block, and then next block and gotta pad to 512 byres
             f.write(MAGIC_NUMBER)
-            f.write(struct.pack('>Q', 0))
-            f.write(struct.pack('>Q', 1))
+            f.write((0).to_bytes(8, byteorder='big'))
+            f.write((1).to_bytes(8, byteorder='big'))
             f.write(b'\x00' * (BLOCK_SIZE - 24))
         print(f"Index file '{filename}' created successfully.")
     #error out if it doesn't work
@@ -367,8 +367,19 @@ def extract_command(index_file, csv_file):
         sys.exit(1)
 
 def main():
-    if len(sys.argv) < 3:
-        print("Usage: python project3.py <command> <index_file> [args...]")
+    #if len(sys.argv) < 3:
+    #    print("Usage: python project3.py <command> <index_file> [args...]")
+    #    sys.exit(1)
+
+    if len(sys.argv) < 2:
+        print("Usage: python project3.py <command> [arguments]")
+        print("Commands:")
+        print("  create <index_file>")
+        print("  insert <index_file> <key> <value>")
+        print("  search <index_file> <key>")
+        print("  load <index_file> <csv_file>")
+        print("  print <index_file>")
+        print("  extract <index_file> <csv_file>")
         sys.exit(1)
 
     command = sys.argv[1].lower()
